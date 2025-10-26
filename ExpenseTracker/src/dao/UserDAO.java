@@ -39,4 +39,31 @@ public class UserDAO {
         }
         return null;
     }
+    
+      public static boolean validateUser(String email, String password) {
+            String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+            try (Connection con = DBConnection.getConnection();
+                 PreparedStatement pst = con.prepareStatement(sql)) {
+                pst.setString(1, email);
+                pst.setString(2, password);
+                ResultSet rs = pst.executeQuery();
+                return rs.next();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        
+        public static boolean changePassword(int userId, String newPassword) {
+            String sql = "UPDATE users SET password = ? WHERE id = ?";
+            try (Connection con = DBConnection.getConnection();
+                 PreparedStatement pst = con.prepareStatement(sql)) {
+                pst.setString(1, newPassword);
+                pst.setInt(2, userId);
+                return pst.executeUpdate() > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
 }

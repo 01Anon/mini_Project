@@ -80,5 +80,31 @@ public class ExpenseDAO {
             return false;
         }
     }
+    
+    public static int getExpenseCount(int userId) {
+        String sql = "SELECT COUNT(*) FROM expenses WHERE user_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setInt(1, userId);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static double getTotalAmount(int userId) {
+        String sql = "SELECT SUM(amount) FROM expenses WHERE user_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setInt(1, userId);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) return rs.getDouble(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 
 }
